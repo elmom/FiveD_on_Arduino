@@ -1,4 +1,3 @@
-
 #include	<avr/io.h>
 #include	<avr/interrupt.h>
 
@@ -14,6 +13,7 @@
 #include	"sermsg.h"
 #include	"watchdog.h"
 #include	"debug.h"
+#include	"intercom.h"
 #include	"sersendf.h"
 #include	"heater.h"
 #include	"analog.h"
@@ -31,7 +31,14 @@ void io_init(void) {
 	#endif
 	ACSR = MASK(ACD);
 
+	SET_OUTPUT(PS_ON_PIN);
+	WRITE(PS_ON_PIN, 0);
+
+	delay_ms(500);
+
 	// setup I/O pins
+	WRITE(DEBUG_LED, 0);	SET_OUTPUT(DEBUG_LED);
+
 	WRITE(X_STEP_PIN, 0);	SET_OUTPUT(X_STEP_PIN);
 	WRITE(X_DIR_PIN,  0);	SET_OUTPUT(X_DIR_PIN);
 	WRITE(X_MIN_PIN,  1);	SET_INPUT(X_MIN_PIN);
@@ -46,6 +53,14 @@ void io_init(void) {
 
 	WRITE(E_STEP_PIN, 0);	SET_OUTPUT(E_STEP_PIN);
 	WRITE(E_DIR_PIN,  0);	SET_OUTPUT(E_DIR_PIN);
+
+	//Enable the RS485 transceiver
+	SET_OUTPUT(RX_ENABLE_PIN);
+	SET_OUTPUT(TX_ENABLE_PIN);
+	SET_OUTPUT(TX_485_PIN);
+	SET_INPUT(RX_485_PIN);
+	disable_transmit();
+
 
 	#ifdef	HEATER_PIN
 		WRITE(HEATER_PIN, 0); SET_OUTPUT(HEATER_PIN);
@@ -83,6 +98,9 @@ void init(void) {
 	// set up serial
 	serial_init();
 
+	// set up intercom
+	intercom_init();
+
 	// set up inputs and outputs
 	io_init();
 
@@ -115,6 +133,8 @@ void init(void) {
 void clock_250ms(void) {
 	// reset watchdog
 	wd_reset();
+			
+	start_send();
 
 	temp_tick();
 
@@ -144,6 +164,12 @@ void clock_250ms(void) {
 int main (void)
 {
 	init();
+
+	sersendf_P(PSTR("Hello Mendel"));
+
+	update_send_cmd(0);
+
+
 
 	// main loop
 	for (;;)

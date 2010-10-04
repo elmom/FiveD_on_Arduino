@@ -1,8 +1,8 @@
 ##############################################################################
 #                                                                            #
-# FiveD on Arduino - alternative firmware for repraps                        #
+# AVR-GCC skeleton                                                           #
 #                                                                            #
-# by Triffid Hunter, Traumflug, jakepoz                                      #
+# by Triffid Hunter                                                          #
 #                                                                            #
 ##############################################################################
 
@@ -12,10 +12,9 @@
 #                                                                            #
 ##############################################################################
 
-PROGRAM = mendel
+PROGRAM = extruder
 
-SOURCES = $(PROGRAM).c serial.c intercom.c dda.c gcode.c timer.c clock.c temp.c sermsg.c dda_queue.c watchdog.c debug.c sersendf.c heater.c
-
+SOURCES = $(PROGRAM).c intercom.c watchdog.c timer.c analog.c
 
 ##############################################################################
 #                                                                            #
@@ -23,7 +22,7 @@ SOURCES = $(PROGRAM).c serial.c intercom.c dda.c gcode.c timer.c clock.c temp.c 
 #                                                                            #
 ##############################################################################
 
-MCU_TARGET = atmega644p
+MCU_TARGET = atmega168
 F_CPU = 16000000L
 
 ##############################################################################
@@ -37,21 +36,6 @@ CC = $(ARCH)gcc
 OBJDUMP = $(ARCH)objdump
 OBJCOPY = $(ARCH)objcopy
 
-##############################################################################
-#                                                                            #
-# Available Defines:                                                         #
-#                                                                            #
-# DEBUG                                                                      #
-#   enables tons of debugging output. may cause host-side talkers to choke   #
-# XONXOFF                                                                    #
-#   enables XON/XOFF flow control for stupid or crude talkers                #
-# ACCELERATION_REPRAP                                                        #
-#   enables reprap-style acceleration                                        #
-# ACCELERATION_RAMPING                                                       #
-#   enables start/stop ramping                                               #
-#                                                                            #
-##############################################################################
-
 DEFS = -DF_CPU=$(F_CPU)
 # DEFS += "-DDEBUG=1"
 
@@ -61,7 +45,6 @@ CFLAGS = -g -Wall -Wstrict-prototypes $(OPTIMIZE) -mmcu=$(MCU_TARGET) $(DEFS) -s
 LDFLAGS = -Wl,--as-needed -Wl,--gc-sections
 
 AVRDUDE = avrdude
-AVRDUDECONF = /etc/avrdude.conf
 
 ##############################################################################
 #                                                                            #
@@ -76,35 +59,29 @@ PROGBAUD = 57600
 
 OBJ = $(patsubst %.c,%.o,${SOURCES})
 
-.PHONY: all program clean size
+.PHONY: all program clean 
 .PRECIOUS: %.o %.elf
 
-all: config.h $(PROGRAM).hex $(PROGRAM).lst $(PROGRAM).sym size
+all: $(PROGRAM).hex $(PROGRAM).lst $(PROGRAM).sym size
 
-program: config.h $(PROGRAM).hex
+program: $(PROGRAM).hex
 	stty $(PROGBAUD) raw ignbrk hup < $(PROGPORT)
 	@sleep 0.1
 	@stty $(PROGBAUD) raw ignbrk hup < $(PROGPORT)
-	$(AVRDUDE) -cstk500v1 -b$(PROGBAUD) -p$(MCU_TARGET) -P$(PROGPORT) -C$(AVRDUDECONF) -U flash:w:$(PROGRAM).hex
-	stty 115200 raw ignbrk -hup -echo ixoff < $(PROGPORT)
+	$(AVRDUDE) -cstk500v1 -b$(PROGBAUD) -p$(MCU_TARGET) -P$(PROGPORT) -C/etc/avrdude.conf -U flash:w:$^
+	stty 115200 raw ignbrk -hup -echo ixon < $(PROGPORT)
 
 clean:
 	rm -rf *.o *.elf *.lst *.map *.sym *.lss *.eep *.srec *.bin *.hex *.al *.i *.s *~
 
-size: $(PROGRAM).elf
+size: $(PROGRAM).hex
 	@echo "  SIZE                   Atmega168        Atmega328p"
-#	@$(OBJDUMP) -h $^ | perl -ne '/.(text)\s+([0-9a-f]+)/ && do { $$a += eval "0x$$2" }; END { printf "    FLASH : %5d bytes  (%2d%% of %2dkb)    (%2d%% of %2dkb)\n", $$a, $$a * 100 / (14 * 1024), 14, $$a * 100 / (30 * 1024), 30 }'
-#	@$(OBJDUMP) -h $^ | perl -ne '/.(data|bss)\s+([0-9a-f]+)/ && do { $$a += eval "0x$$2" }; END { printf "    RAM   : %5d bytes  (%2d%% of %2dkb)    (%2d%% of %2dkb)\n", $$a, $$a * 100 / (1 * 1024), 1, $$a * 100 / (2 * 1024), 2 }'
-#	@$(OBJDUMP) -h $^ | perl -ne '/.(eeprom)\s+([0-9a-f]+)/ && do { $$a += eval "0x$$2" }; END { printf "    EEPROM: %5d bytes  (%2d%% of %2dkb)    (%2d%% of %2dkb)\n", $$a, $$a * 100 / (1 * 1024), 1, $$a * 100 / (2 * 1024), 2 }'
+#	@$(OBJDUMP) -h $(PROGRAM).elf | perl -ne '/.(text)\s+([0-9a-f]+)/ && do { $$a += eval "0x$$2" }; END { printf "    FLASH: %5d bytes  (%2d%% of %2dkb)    (%2d%% of %2dkb)\n", $$a, $$a * 100 / (14 * 1024), 14, $$a * 100 / (30 * 1024), 30 }'
+#	@$(OBJDUMP) -h $(PROGRAM).elf | perl -ne '/.(data|bss)\s+([0-9a-f]+)/ && do { $$a += eval "0x$$2" }; END { printf "    RAM  : %5d bytes  (%2d%% of %2dkb)    (%2d%% of %2dkb)\n", $$a, $$a * 100 / (1 * 1024), 1, $$a * 100 / (2 * 1024), 2 }'
 
-
-config.h: config.h.dist
-	@echo "Please review config.h, as config.h.dist is more recent."
-	@false
-
-%.o: %.c config.h
+%.o: %.c
 	@echo "  CC        $@"
-	@$(CC) -c $(CFLAGS) -Wa,-adhlns=$(<:.c=.al) -o $@ $(subst .o,.c,$@)
+	@$(CC) -c $(CFLAGS) -Wa,-adhlns=$(<:.c=.al) -o $@ $^
 
 %.elf: $(OBJ)
 	@echo "  LINK      $@"

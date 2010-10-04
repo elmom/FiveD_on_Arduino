@@ -16,6 +16,9 @@
 // wether to insist on a checksum
 //#define	REQUIRE_CHECKSUM
 
+// enables the M101 and M103 commands to manually start stop extrusion
+//#define ENABLE_EXTRUDER_COMMANDS
+
 // this is a very crude decimal-based floating point structure. a real floating point would at least have signed exponent
 typedef struct {
 	uint32_t	sign			:1;

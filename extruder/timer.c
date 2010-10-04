@@ -2,33 +2,11 @@
 
 #include	<avr/interrupt.h>
 
-#include	"config.h"
-#include	"dda_queue.h"
-#include	"dda.h"
+#include	"pinout.h"
 #include	"watchdog.h"
-#include	"temp.h"
-#include	"serial.h"
 
-ISR(TIMER1_COMPA_vect) {
 
-	queue_step();
-
-}
-
-void setupTimerInterrupt()
-{
-	// no outputs
-	TCCR1A = 0;
-	// CTC mode
-	TCCR1B = MASK(WGM12);
-	// no interrupts yet
-	TIMSK1 = 0;
-
-	//start off with a slow frequency.
-	setTimer(F_CPU / 100);
-}
-
-// the following are all from reprap project 5D firmware with some modification to reduce redundancy
+// the following are all from reprap project 5D firmware
 
 uint8_t getTimerResolution(const uint32_t delay)
 {
@@ -52,7 +30,10 @@ uint8_t getTimerResolution(const uint32_t delay)
 		return 4;
 	// our slowest speed at our lowest resolution ((2^16-1) * 64 usecs = 4194240 usecs (4.19 seconds max))
 	// range: 7.812Khz max - 0.119hz min
+// 	else if (delay <= 67107840L)
+// 		return 5;
 	//its really slow... hopefully we can just get by with super slow.
+// 	else
 	return 5;
 }
 
@@ -94,25 +75,27 @@ uint16_t getTimerCeiling(const uint32_t delay)
 
 void setTimer(uint32_t delay)
 {
-	// delay is the delay between steps in IOclk ticks.
+	// delay is the delay between steps in microsecond ticks.
 	//
 	// we break it into 5 different resolutions based on the delay.
 	// then we set the resolution based on the size of the delay.
 	// we also then calculate the timer ceiling required. (ie what the counter counts to)
 	// the result is the timer counts up to the appropriate time and then fires an interrupt.
 
-	setTimerResolution(0);													// stop timer
-	GTCCR = MASK(PSRSYNC);													// reset prescaler - affects timer 0 too but since it's doing PWM, it's not using the prescaler
+	// Actual ticks are 0.0625 us, so multiply delay by 16
 
-	setTimerCeiling(getTimerCeiling(delay));				// set timeout
-	setTimerResolution(getTimerResolution(delay));	// restart timer with proper prescaler
+	// convert to ticks
+// 	delay = delay US;
+
+	setTimerCeiling(getTimerCeiling(delay));
+	setTimerResolution(getTimerResolution(delay));
 }
 
 // delay( microseconds )
 void delay(uint32_t delay) {
 	wd_reset();
 	while (delay > 65535) {
-		delayMicrosecondsInterruptible(65533);
+		delayMicrosecondsInterruptible(65534);
 		delay -= 65535;
 		wd_reset();
 	}
@@ -149,8 +132,8 @@ void delayMicrosecondsInterruptible(uint16_t us)
 
   // busy wait
   __asm__ __volatile__ ("1: sbiw %0,1" "\n\t" // 2 cycles
-		"brne 1b" :
-  	"=w" (us) :
-  	"0" (us) // 2 cycles
+"brne 1b" :
+  "=w" (us) :
+  "0" (us) // 2 cycles
     );
 }

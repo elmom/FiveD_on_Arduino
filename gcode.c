@@ -528,6 +528,7 @@ void process_gcode_command(GCODE_COMMAND *gcmd) {
 		switch (gcmd->M) {
 			// M101- extruder on
 			case 101:
+#ifdef ENABLE_EXTRUDER_COMMANDS
 				if (temp_achieved() == 0) {
 					enqueue(NULL);
 				}
@@ -538,12 +539,14 @@ void process_gcode_command(GCODE_COMMAND *gcmd) {
 					SpecialMoveE(E_STARTSTOP_STEPS, MAXIMUM_FEEDRATE_E);
 					startpoint.F = backup_f;
 				} while (0);
+#endif
 				break;
 
 			// M102- extruder reverse
 
 			// M103- extruder off
 			case 103:
+#ifdef ENABLE_EXTRUDER_COMMANDS
 				do {
 					// backup feedrate, move E very quickly then restore feedrate
 					backup_f = startpoint.F;
@@ -551,6 +554,7 @@ void process_gcode_command(GCODE_COMMAND *gcmd) {
 					SpecialMoveE(-E_STARTSTOP_STEPS, MAXIMUM_FEEDRATE_E);
 					startpoint.F = backup_f;
 				} while (0);
+#endif
 				break;
 
 			// M104- set temperature

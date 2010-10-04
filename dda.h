@@ -38,6 +38,7 @@ typedef struct {
 			// status fields
 			uint8_t						nullmove			:1;
 			uint8_t						live					:1;
+
 			#ifdef ACCELERATION_REPRAP
 			uint8_t						accel					:1;
 			#endif
