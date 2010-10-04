@@ -2,12 +2,8 @@
 
 #include	<avr/interrupt.h>
 
-#include	"config.h"
 #include	"dda_queue.h"
-#include	"dda.h"
 #include	"watchdog.h"
-#include	"temp.h"
-#include	"serial.h"
 
 ISR(TIMER1_COMPA_vect) {
 
@@ -23,9 +19,6 @@ void setupTimerInterrupt()
 	TCCR1B = MASK(WGM12);
 	// no interrupts yet
 	TIMSK1 = 0;
-
-	//start off with a slow frequency.
-	setTimer(F_CPU / 100);
 }
 
 // the following are all from reprap project 5D firmware with some modification to reduce redundancy
