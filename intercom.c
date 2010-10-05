@@ -1,20 +1,21 @@
 #include	"intercom.h"
 
 #include	"arduino.h"
-#include	"pinout.h"
+#include	"config.h"
 #include	"timer.h"
 
 
 #define		INTERCOM_BAUD			19200
 
-//#define		EXTRUDER
-#define		HOST
+#ifndef		EXTRUDER
+    #define		HOST
+#endif
 
 /*
  Defines a super simple intercom interface using the RS485 modules
 
- Host will say: START1 START2 PWM_CMD PWM_CHK 
- Extruder will reply: START1 START2 TMP_CMD TMP_CHK 
+ Host will say: START1 START2 PWM_CMD PWM_CHK
+ Extruder will reply: START1 START2 TMP_CMD TMP_CHK
 
  CHK = 255-CMD, if they match do the work, if not, ignore this packet
 
@@ -130,7 +131,7 @@ ISR(USART_RX_vect)
 	c = UDR0;
 	UCSR0A &= ~MASK(FE0) & ~MASK(DOR0) & ~MASK(UPE0);
 #endif
-		
+
 	if (state >= READ_START1) {
 
 		switch(state) {
@@ -147,13 +148,13 @@ ISR(USART_RX_vect)
 			break;
 		case READ_CHK:
 			chk = c;
-					
-			if (chk == 255 - cmd) {	
+
+			if (chk == 255 - cmd) {
 				//Values are correct, do something useful
-		WRITE(DEBUG_LED,1);	
+		WRITE(DEBUG_LED,1);
 				read_cmd = cmd;
 #ifdef EXTRUDER
-		//		start_send();
+				start_send();
 #endif
 			}
 			else
@@ -176,8 +177,8 @@ ISR(USART_TX_vect)
 {
 	if (state == SEND_DONE) {
 		finish_send();
-		
-					
+
+
 #ifdef HOST
 	UCSR1B &= ~MASK(TXCIE1);
 #else
