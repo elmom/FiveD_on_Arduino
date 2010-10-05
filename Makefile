@@ -65,7 +65,8 @@ AVRDUDECONF = /etc/avrdude.conf
 
 ##############################################################################
 #                                                                            #
-# udev rule for /dev/arduino (insert into /etc/udev/rules.d/99-local.rules)  #
+# udev rule for /dev/arduino (insert as on line into                         #
+#                              /etc/udev/rules.d/99-local.rules)             #
 # SUBSYSTEMS=="usb", ATTRS{idProduct}=="6001", ATTRS{idVendor}=="0403",      #
 #     NAME="%k", SYMLINK+="arduino", SYMLINK+="arduino_$attr{serial}",       #
 #     MODE="0660"                                                            #
@@ -93,9 +94,9 @@ clean:
 
 size: $(PROGRAM).elf
 	@echo "  SIZE                   Atmega168        Atmega328p"
-#	@$(OBJDUMP) -h $^ | perl -ne '/.(text)\s+([0-9a-f]+)/ && do { $$a += eval "0x$$2" }; END { printf "    FLASH : %5d bytes  (%2d%% of %2dkb)    (%2d%% of %2dkb)\n", $$a, $$a * 100 / (14 * 1024), 14, $$a * 100 / (30 * 1024), 30 }'
-#	@$(OBJDUMP) -h $^ | perl -ne '/.(data|bss)\s+([0-9a-f]+)/ && do { $$a += eval "0x$$2" }; END { printf "    RAM   : %5d bytes  (%2d%% of %2dkb)    (%2d%% of %2dkb)\n", $$a, $$a * 100 / (1 * 1024), 1, $$a * 100 / (2 * 1024), 2 }'
-#	@$(OBJDUMP) -h $^ | perl -ne '/.(eeprom)\s+([0-9a-f]+)/ && do { $$a += eval "0x$$2" }; END { printf "    EEPROM: %5d bytes  (%2d%% of %2dkb)    (%2d%% of %2dkb)\n", $$a, $$a * 100 / (1 * 1024), 1, $$a * 100 / (2 * 1024), 2 }'
+	@$(OBJDUMP) -h $^ | perl -ne '/.(text)\s+([0-9a-f]+)/ && do { $$a += eval "0x$$2" }; END { printf "    FLASH : %5d bytes  (%2d%% of %2dkb)    (%2d%% of %2dkb)\n", $$a, $$a * 100 / (14 * 1024), 14, $$a * 100 / (30 * 1024), 30 }'
+	@$(OBJDUMP) -h $^ | perl -ne '/.(data|bss)\s+([0-9a-f]+)/ && do { $$a += eval "0x$$2" }; END { printf "    RAM   : %5d bytes  (%2d%% of %2dkb)    (%2d%% of %2dkb)\n", $$a, $$a * 100 / (1 * 1024), 1, $$a * 100 / (2 * 1024), 2 }'
+	@$(OBJDUMP) -h $^ | perl -ne '/.(eeprom)\s+([0-9a-f]+)/ && do { $$a += eval "0x$$2" }; END { printf "    EEPROM: %5d bytes  (%2d%% of %2dkb)    (%2d%% of %2dkb)\n", $$a, $$a * 100 / (1 * 1024), 1, $$a * 100 / (2 * 1024), 2 }'
 
 
 config.h: config.h.dist
@@ -124,4 +125,4 @@ config.h: config.h.dist
 
 %.sym: %.elf
 	@echo "  SYM       $@"
-#	@$(OBJDUMP) -t $< | perl -ne 'BEGIN { printf "  ADDR  NAME                  SIZE\n"; } /([0-9a-f]+)\s+(\w+)\s+O\s+\.(bss|data)\s+([0-9a-f]+)\s+(\w+)/ && printf "0x%04x  %-20s +%d\n", eval("0x$$1") & 0xFFFF, $$5, eval("0x$$4")' | sort -k1 > $@
+	@$(OBJDUMP) -t $< | perl -ne 'BEGIN { printf "  ADDR  NAME                  SIZE\n"; } /([0-9a-f]+)\s+(\w+)\s+O\s+\.(bss|data)\s+([0-9a-f]+)\s+(\w+)/ && printf "0x%04x  %-20s +%d\n", eval("0x$$1") & 0xFFFF, $$5, eval("0x$$4")' | sort -k1 > $@

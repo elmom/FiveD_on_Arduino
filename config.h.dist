@@ -140,22 +140,22 @@ firmware build options
 */
 
 #define	X_STEP_PIN						AIO0
-#define	X_DIR_PIN						AIO1
-#define	X_MIN_PIN						AIO2
+#define	X_DIR_PIN							AIO1
+#define	X_MIN_PIN							AIO2
 #define X_ENABLE_PIN					DIO19
 
 #define	Y_STEP_PIN						AIO3
-#define	Y_DIR_PIN						AIO4
-#define	Y_MIN_PIN						AIO5
+#define	Y_DIR_PIN							AIO4
+#define	Y_MIN_PIN							AIO5
 #define Y_ENABLE_PIN					DIO24
 
 #define	Z_STEP_PIN						DIO2
-#define	Z_DIR_PIN						DIO3
-#define	Z_MIN_PIN						DIO4
+#define	Z_DIR_PIN							DIO3
+#define	Z_MIN_PIN							DIO4
 #define Z_ENABLE_PIN					DIO29
 
 #define	E_STEP_PIN						DIO7
-#define	E_DIR_PIN						DIO8
+#define	E_DIR_PIN							DIO8
 
 //Define this for a global stepper enable/disable,
 //#define	STEPPER_ENABLE_PIN		DIO9
@@ -197,6 +197,7 @@ firmware build options
 #define	UM_PER_STEP_Y		((uint32_t) ((1000.0 / STEPS_PER_MM_Y) + 0.5))
 #define	UM_PER_STEP_Z		((uint32_t) ((1000.0 / STEPS_PER_MM_Z) + 0.5))
 #define	UM_PER_STEP_E		((uint32_t) ((1000.0 / STEPS_PER_MM_E) + 0.5))
+
 
 /*
 	X Stepper
@@ -253,6 +254,7 @@ firmware build options
 */
 #define enable_transmit()			do { WRITE(TX_ENABLE_PIN,1);  WRITE(RX_ENABLE_PIN,0); } while(0)
 #define disable_transmit()			do { WRITE(TX_ENABLE_PIN,0);  WRITE(RX_ENABLE_PIN,0); } while(0)
+
 /*
 	Heater
 */

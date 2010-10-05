@@ -5,9 +5,8 @@
 
 #include	"config.h"
 
-
 // RepRap host software isn't exactly tolerant on what it ready back.
-//#define REPRAP_HOST_COMPATIBILITY
+#define REPRAP_HOST_COMPATIBILITY
 
 #define		TEMP_FLAG_PRESENT		1
 #define		TEMP_FLAG_TCOPEN		2

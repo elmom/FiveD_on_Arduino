@@ -1,3 +1,4 @@
+
 #include	<avr/io.h>
 #include	<avr/interrupt.h>
 
@@ -133,7 +134,7 @@ void init(void) {
 void clock_250ms(void) {
 	// reset watchdog
 	wd_reset();
-			
+
 	start_send();
 
 	temp_tick();
@@ -168,8 +169,6 @@ int main (void)
 	sersendf_P(PSTR("Hello Mendel"));
 
 	update_send_cmd(0);
-
-
 
 	// main loop
 	for (;;)

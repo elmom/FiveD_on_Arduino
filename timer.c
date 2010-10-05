@@ -6,9 +6,11 @@
 #include	"watchdog.h"
 
 ISR(TIMER1_COMPA_vect) {
+	WRITE(SCK, 1);
 
 	queue_step();
 
+	WRITE(SCK, 0);
 }
 
 void setupTimerInterrupt()
