@@ -1,11 +1,11 @@
-#include	<stddef.h>
-#include	<stdint.h>
-#include	<string.h>
+//#include	<stddef.h>
+//#include	<stdint.h>
+//#include	<string.h>
 
 #include	<avr/io.h>
 #include	<avr/interrupt.h>
 
-#include "pinout.h"
+#include "config.h"
 #include "timer.h"
 #include "intercom.h"
 #include "analog.h"

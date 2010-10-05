@@ -16,6 +16,13 @@ PROGRAM = mendel
 
 SOURCES = $(PROGRAM).c serial.c dda.c gcode.c timer.c clock.c temp.c sermsg.c dda_queue.c watchdog.c debug.c sersendf.c heater.c analog.c intercom.c
 
+# For extruder board
+
+EB_PROGRAM = extruder
+
+EB_SOURCES = $(EB_PROGRAM).c timer.c temp.c watchdog.c heater.c analog.c intercom.c
+
+
 ##############################################################################
 #                                                                            #
 # Change these to suit your hardware                                         #
@@ -92,8 +99,11 @@ program: $(PROGRAM).hex config.h
 prepare_mb: $(PROGRAM).hex config.h
 	cp $(SOURCES) *.h motherboard/
 
+prepare_eb: $(EB_PROGRAM).hex config.h
+	cp $(EB_SOURCES) *.h extruder/
+
 clean:
-	rm -rf *.o *.elf *.lst *.map *.sym *.lss *.eep *.srec *.bin *.hex *.al *.i *.s *~
+	rm -rf *.o *.elf *.lst *.map *.sym *.lss *.eep *.srec *.bin *.hex *.al *.i *.s *~ extruder/*.[ch] motherboard/*.[ch]
 
 size: $(PROGRAM).elf
 	@echo "  SIZE                   Atmega168        Atmega328p"
