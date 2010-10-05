@@ -5,6 +5,30 @@
 // values reflecting the gearing of your machine
 // all numbers are integers, so no decimals, please :-)
 
+//Sane defaults for mendels
+#ifdef MENDEL
+
+#define	STEPS_PER_MM_X		320
+#define	STEPS_PER_MM_Y		320
+#define	STEPS_PER_MM_Z		320
+
+#define	STEPS_PER_MM_E		2
+
+#define	E_STARTSTOP_STEPS	0
+
+#define	MAXIMUM_FEEDRATE_X	5000
+#define	MAXIMUM_FEEDRATE_Y	5000
+#define	MAXIMUM_FEEDRATE_Z	150
+#define	MAXIMUM_FEEDRATE_E	5000
+
+#define	SEARCH_FEEDRATE_X	3000
+#define	SEARCH_FEEDRATE_Y	3000
+#define	SEARCH_FEEDRATE_Z	100
+#define	SEARCH_FEEDRATE_E	3000
+
+// Custom settings
+#else
+
 // calculate these values appropriate for your machine
 #define	STEPS_PER_MM_X		320
 #define	STEPS_PER_MM_Y		320
@@ -31,6 +55,8 @@
 #define	SEARCH_FEEDRATE_Y	50
 #define	SEARCH_FEEDRATE_Z	50
 #define	SEARCH_FEEDRATE_E	50
+
+#endif
 
 // extruder settings
 #define	TEMP_HYSTERESIS		20
@@ -62,10 +88,13 @@
 #endif
 
 // which temperature sensor are you using?
+#ifndef GEN3
 // #define	TEMP_MAX6675
 #define	TEMP_THERMISTOR
 // #define	TEMP_AD595
-// #define		TEMP_INTERCOM
+#else
+#define		TEMP_INTERCOM
+#endif
 
 // if you selected thermistor or AD595, what pin is it on?
 #define	TEMP_PIN_CHANNEL	AIO0_PIN
@@ -123,6 +152,39 @@ firmware build options
 #define	RESERVED_RXD					DIO0
 #define	RESERVED_TXD					DIO1
 
+//Pin definitions for Gen3 electronics
+#ifdef GEN3
+
+#define	X_STEP_PIN					DIO15
+#define	X_DIR_PIN					DIO18
+#define	X_MIN_PIN					DIO20
+#define X_ENABLE_PIN					DIO19
+
+#define	Y_STEP_PIN					DIO23
+#define	Y_DIR_PIN					DIO22
+#define	Y_MIN_PIN					DIO25
+#define Y_ENABLE_PIN					DIO24
+
+#define	Z_STEP_PIN					DIO27
+#define	Z_DIR_PIN					DIO28
+#define	Z_MIN_PIN					DIO30
+#define Z_ENABLE_PIN					DIO29
+
+#define	E_STEP_PIN					DIO17
+#define	E_DIR_PIN					DIO16
+
+#define PS_ON_PIN					DIO14
+
+//RS485 Interface pins
+#define RS485
+#define RX_485_PIN                      DIO10
+#define TX_485_PIN                      DIO11
+#define RX_ENABLE_PIN                   DIO13
+#define TX_ENABLE_PIN                   DIO12
+
+//Custom pin definitions
+#else
+
 /*
 	these pins are used for the MAX6675
 */
@@ -130,8 +192,6 @@ firmware build options
 #define	RESERVED_MISO					DIO12
 #define	RESERVED_MOSI					DIO11
 #define	RESERVED_SS						DIO10
-
-#define PS_ON_PIN	DIO14
 
 /*
 	user defined pins
@@ -142,23 +202,25 @@ firmware build options
 #define	X_STEP_PIN						AIO0
 #define	X_DIR_PIN							AIO1
 #define	X_MIN_PIN							AIO2
-#define X_ENABLE_PIN					DIO19
+//#define X_ENABLE_PIN						DIO19
 
 #define	Y_STEP_PIN						AIO3
 #define	Y_DIR_PIN							AIO4
 #define	Y_MIN_PIN							AIO5
-#define Y_ENABLE_PIN					DIO24
+//#define Y_ENABLE_PIN						DIO24
 
 #define	Z_STEP_PIN						DIO2
 #define	Z_DIR_PIN							DIO3
 #define	Z_MIN_PIN							DIO4
-#define Z_ENABLE_PIN					DIO29
+//#define Z_ENABLE_PIN						DIO29
 
 #define	E_STEP_PIN						DIO7
 #define	E_DIR_PIN							DIO8
 
+//#define PS_ON_PIN						DIO14
+
 //Define this for a global stepper enable/disable,
-//#define	STEPPER_ENABLE_PIN		DIO9
+//#define	STEPPER_ENABLE_PIN				DIO9
 
 // list of PWM-able pins and corresponding timers
 // timer1 is used for step timing so don't use OC1A/OC1B (DIO9/DIO10)
@@ -175,13 +237,9 @@ firmware build options
 #define	FAN_PIN 						DIO5
 #define	FAN_PWM							OCR0B
 
-#define DEBUG_LED						DIO0
+//#define DEBUG_LED						DIO0
 
-//RS485 Interface pins
-#define RX_485_PIN                      DIO10
-#define TX_485_PIN                      DIO11
-#define RX_ENABLE_PIN                   DIO13
-#define TX_ENABLE_PIN                   DIO12
+#endif
 
 // --------------------------------------------------------------------------
 // you shouldn't need to edit anything below this line

@@ -14,10 +14,10 @@
 #include	"sermsg.h"
 #include	"watchdog.h"
 #include	"debug.h"
-#include	"intercom.h"
 #include	"sersendf.h"
 #include	"heater.h"
 #include	"analog.h"
+#include	"intercom.h"
 
 void io_init(void) {
 	// disable modules we don't use
@@ -32,14 +32,17 @@ void io_init(void) {
 	#endif
 	ACSR = MASK(ACD);
 
+#ifdef PS_ON_PIN
 	SET_OUTPUT(PS_ON_PIN);
 	WRITE(PS_ON_PIN, 0);
 
 	delay_ms(500);
+#endif
 
+#ifdef DEBUG_LED
 	// setup I/O pins
 	WRITE(DEBUG_LED, 0);	SET_OUTPUT(DEBUG_LED);
-
+#endif
 	WRITE(X_STEP_PIN, 0);	SET_OUTPUT(X_STEP_PIN);
 	WRITE(X_DIR_PIN,  0);	SET_OUTPUT(X_DIR_PIN);
 	WRITE(X_MIN_PIN,  1);	SET_INPUT(X_MIN_PIN);
@@ -55,13 +58,14 @@ void io_init(void) {
 	WRITE(E_STEP_PIN, 0);	SET_OUTPUT(E_STEP_PIN);
 	WRITE(E_DIR_PIN,  0);	SET_OUTPUT(E_DIR_PIN);
 
+#ifdef RS485
 	//Enable the RS485 transceiver
 	SET_OUTPUT(RX_ENABLE_PIN);
 	SET_OUTPUT(TX_ENABLE_PIN);
 	SET_OUTPUT(TX_485_PIN);
 	SET_INPUT(RX_485_PIN);
 	disable_transmit();
-
+#endif
 
 	#ifdef	HEATER_PIN
 		WRITE(HEATER_PIN, 0); SET_OUTPUT(HEATER_PIN);
@@ -99,9 +103,10 @@ void init(void) {
 	// set up serial
 	serial_init();
 
+#ifdef RS485
 	// set up intercom
 	intercom_init();
-
+#endif
 	// set up inputs and outputs
 	io_init();
 
@@ -135,8 +140,9 @@ void clock_250ms(void) {
 	// reset watchdog
 	wd_reset();
 
+#ifdef RS485
 	start_send();
-
+#endif
 	temp_tick();
 
 	if (steptimeout > (30 * 4)) {
@@ -166,10 +172,11 @@ int main (void)
 {
 	init();
 
-	sersendf_P(PSTR("Hello Mendel"));
+	sersendf_P(PSTR("Mendel says Hello"));
 
+#ifdef RS485
 	update_send_cmd(0);
-
+#endif
 	// main loop
 	for (;;)
 	{

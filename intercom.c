@@ -4,6 +4,7 @@
 #include	"config.h"
 #include	"timer.h"
 
+#ifdef RS485
 
 #define		INTERCOM_BAUD			19200
 
@@ -222,3 +223,4 @@ ISR(USART_UDRE_vect)
 	}
 }
 
+#endif
