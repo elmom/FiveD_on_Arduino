@@ -32,6 +32,12 @@
 #define	SEARCH_FEEDRATE_Z	100
 #define	SEARCH_FEEDRATE_E	3000
 
+//Not used yet!
+#define DISABLE_X 0
+#define DISABLE_Y 0
+#define DISABLE_Z 1
+#define DISABLE_E 0
+
 // Custom settings
 #else
 
@@ -67,6 +73,19 @@
 #define	SEARCH_FEEDRATE_Y	50
 #define	SEARCH_FEEDRATE_Z	50
 #define	SEARCH_FEEDRATE_E	50
+
+// Set these to 1 to disable an axis when it's not being used,
+// and for the extruder.  Usually only Z is disabled when not in
+// use.  You will probably find that disabling the others (i.e.
+// powering down the steppers that drive them) when the ends of
+// movements are reached causes poor-quality builds.  (Inertia
+// causes overshoot if the motors are not left powered up.)
+
+//Not used yet!
+#define DISABLE_X 0
+#define DISABLE_Y 0
+#define DISABLE_Z 1
+#define DISABLE_E 0
 
 #endif
 
@@ -177,14 +196,17 @@ firmware build options
 #define	X_STEP_PIN						AIO0
 #define	X_DIR_PIN							AIO1
 #define	X_MIN_PIN							AIO2
+//#define X_ENABLE_PIN						DIO19
 
 #define	Y_STEP_PIN						AIO3
 #define	Y_DIR_PIN							AIO4
 #define	Y_MIN_PIN							AIO5
+//#define Y_ENABLE_PIN						DIO24
 
 #define	Z_STEP_PIN						DIO2
 #define	Z_DIR_PIN							DIO3
 #define	Z_MIN_PIN							DIO4
+//#define Z_ENABLE_PIN						DIO29
 
 #define	E_STEP_PIN						DIO7
 #define	E_DIR_PIN							DIO8
@@ -312,6 +334,9 @@ firmware build options
 	// for connection to ATX PSU PWR_ON signal
 	#define	power_on()					do { WRITE(STEPPER_ENABLE_PIN, 0); SET_OUTPUT(STEPPER_ENABLE_PIN); } while (0)
 	#define	power_off()					SET_INPUT(STEPPER_ENABLE_PIN)
+#elif defined(X_ENABLE_PIN) && defined(Y_ENABLE_PIN) && defined(Z_ENABLE_PIN)
+	#define	power_on()					do { WRITE(X_ENABLE_PIN, 0); SET_OUTPUT(X_ENABLE_PIN); WRITE(Y_ENABLE_PIN, 0); SET_OUTPUT(Y_ENABLE_PIN); SET_OUTPUT(Z_ENABLE_PIN); } while (0)
+	#define	power_off()					do { SET_INPUT(X_ENABLE_PIN); SET_INPUT(Y_ENABLE_PIN); SET_INPUT(Z_ENABLE_PIN);  } while (0)
 #else
 	#define	power_on()					if (0) {}
 	#define	power_off()					if (0) {}
