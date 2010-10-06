@@ -49,7 +49,7 @@
 // http://blog.arcol.hu/?p=157 may help with this next one
 #define	STEPS_PER_MM_E		320
 
-#Not used yet
+//Not used yet
 #define INVERT_X_DIR		0
 #define INVERT_Y_DIR		0
 #define INVERT_Z_DIR		0
@@ -210,6 +210,8 @@ firmware build options
 
 #define	E_STEP_PIN						DIO7
 #define	E_DIR_PIN							DIO8
+//Not used yet!
+//#define E_ENABLE_PIN						DIO29
 
 #define	STEPPER_ENABLE_PIN		DIO9
 
