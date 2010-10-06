@@ -5,6 +5,36 @@
 // values reflecting the gearing of your machine
 // all numbers are integers, so no decimals, please :-)
 
+//Sane defaults for mendels
+#ifdef MENDEL
+
+#define	STEPS_PER_MM_X		10
+#define	STEPS_PER_MM_Y		10
+#define	STEPS_PER_MM_Z		833
+
+#define	STEPS_PER_MM_E		2
+
+#Not used yet
+#define INVERT_X_DIR		1
+#define INVERT_Y_DIR		0
+#define INVERT_Z_DIR		1
+#define INVERT_E_DIR		1
+
+#define	E_STARTSTOP_STEPS	0
+
+#define	MAXIMUM_FEEDRATE_X	5000
+#define	MAXIMUM_FEEDRATE_Y	5000
+#define	MAXIMUM_FEEDRATE_Z	150
+#define	MAXIMUM_FEEDRATE_E	5000
+
+#define	SEARCH_FEEDRATE_X	3000
+#define	SEARCH_FEEDRATE_Y	3000
+#define	SEARCH_FEEDRATE_Z	100
+#define	SEARCH_FEEDRATE_E	3000
+
+// Custom settings
+#else
+
 // calculate these values appropriate for your machine
 #define	STEPS_PER_MM_X		320
 #define	STEPS_PER_MM_Y		320
@@ -12,6 +42,12 @@
 
 // http://blog.arcol.hu/?p=157 may help with this next one
 #define	STEPS_PER_MM_E		320
+
+#Not used yet
+#define INVERT_X_DIR		0
+#define INVERT_Y_DIR		0
+#define INVERT_Z_DIR		0
+#define INVERT_E_DIR		0
 
 // this is how many steps to suck back the filament by when we stop
 #define	E_STARTSTOP_STEPS	20
@@ -32,6 +68,8 @@
 #define	SEARCH_FEEDRATE_Z	50
 #define	SEARCH_FEEDRATE_E	50
 
+#endif
+
 // extruder settings
 #define	TEMP_HYSTERESIS		20
 #define	TEMP_RESIDENCY_TIME	60
@@ -41,7 +79,7 @@
 		Each movement starts at the speed of the previous command and accelerates or decelerates linearly to reach target speed at the end of the movement.
 		Can also be set in Makefile
 */
-#define ACCELERATION_REPRAP
+//#define ACCELERATION_REPRAP
 
 /*
 	acceleration and deceleration ramping.
