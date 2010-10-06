@@ -16,6 +16,9 @@ PROGRAM = mendel
 
 SOURCES = $(PROGRAM).c serial.c dda.c gcode.c timer.c clock.c temp.c sermsg.c dda_queue.c watchdog.c debug.c sersendf.c heater.c analog.c
 
+#For RS485 comms (gen3)
+#SOURCES += intercom.c
+
 ##############################################################################
 #                                                                            #
 # Change these to suit your hardware                                         #
