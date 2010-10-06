@@ -179,6 +179,41 @@ firmware build options
 #define	RESERVED_RXD					DIO0
 #define	RESERVED_TXD					DIO1
 
+//Pin definitions for Gen3 electronics
+#ifdef GEN3
+
+#define	X_STEP_PIN					DIO15
+#define	X_DIR_PIN					DIO18
+#define	X_MIN_PIN					DIO20
+#define X_ENABLE_PIN					DIO19
+
+#define	Y_STEP_PIN					DIO23
+#define	Y_DIR_PIN					DIO22
+#define	Y_MIN_PIN					DIO25
+#define Y_ENABLE_PIN					DIO24
+
+#define	Z_STEP_PIN					DIO27
+#define	Z_DIR_PIN					DIO28
+#define	Z_MIN_PIN					DIO30
+#define Z_ENABLE_PIN					DIO29
+
+#define	E_STEP_PIN					DIO17
+#define	E_DIR_PIN					DIO16
+
+#define PS_ON_PIN					DIO14
+
+#define DEBUG_LED					DIO0
+
+//RS485 Interface pins
+#define RS485
+#define RX_485_PIN					DIO10
+#define TX_485_PIN					DIO11
+#define RX_ENABLE_PIN					DIO13
+#define TX_ENABLE_PIN					DIO12
+
+//Custom pin definitions
+#else
+
 /*
 	these pins are used for the MAX6675
 */
@@ -213,6 +248,8 @@ firmware build options
 //Not used yet!
 //#define E_ENABLE_PIN						DIO29
 
+//#define PS_ON_PIN						DIO14
+
 #define	STEPPER_ENABLE_PIN		DIO9
 
 // list of PWM-able pins and corresponding timers
@@ -229,6 +266,10 @@ firmware build options
 
 #define	FAN_PIN								DIO5
 #define	FAN_PWM								OCR0B
+
+//#define DEBUG_LED						DIO0
+
+#endif
 
 // --------------------------------------------------------------------------
 // you shouldn't need to edit anything below this line
