@@ -8,7 +8,7 @@
 
 #define		INTERCOM_BAUD			19200
 
-#ifndef		EXTRUDER
+#ifndef		GEN3_EB
     #define		HOST
 #endif
 
@@ -152,9 +152,12 @@ ISR(USART_RX_vect)
 
 			if (chk == 255 - cmd) {
 				//Values are correct, do something useful
+#ifdef DEBUG_LED
 		WRITE(DEBUG_LED,1);
 				read_cmd = cmd;
-#ifdef EXTRUDER
+#endif
+
+#ifdef GEN3_EB
 				start_send();
 #endif
 			}

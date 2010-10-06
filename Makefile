@@ -17,11 +17,8 @@ PROGRAM = mendel
 SOURCES = $(PROGRAM).c serial.c dda.c gcode.c timer.c clock.c temp.c sermsg.c dda_queue.c watchdog.c debug.c sersendf.c heater.c analog.c intercom.c
 
 # For extruder board
-
 EB_PROGRAM = extruder
-
 EB_SOURCES = $(EB_PROGRAM).c timer.c temp.c watchdog.c heater.c analog.c intercom.c
-
 
 ##############################################################################
 #                                                                            #
@@ -98,9 +95,14 @@ program: $(PROGRAM).hex config.h
 
 prepare_mb: $(PROGRAM).hex config.h
 	cp $(SOURCES) *.h motherboard/
+	cp config.h motherboard/config_mb.h
+	cp config.h_mb motherboard/config.h
+
 
 prepare_eb: $(EB_PROGRAM).hex config.h
 	cp $(EB_SOURCES) *.h extruder/
+	cp config.h extruder/config_eb.h
+	cp config.h_eb extruder/config.h
 
 clean:
 	rm -rf *.o *.elf *.lst *.map *.sym *.lss *.eep *.srec *.bin *.hex *.al *.i *.s *~ extruder/*.[ch] motherboard/*.[ch]
