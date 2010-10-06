@@ -17,6 +17,7 @@
 #include	"sersendf.h"
 #include	"heater.h"
 #include	"analog.h"
+#include	"intercom.h"
 
 void io_init(void) {
 	// disable modules we don't use
@@ -46,6 +47,15 @@ void io_init(void) {
 
 	WRITE(E_STEP_PIN, 0);	SET_OUTPUT(E_STEP_PIN);
 	WRITE(E_DIR_PIN,  0);	SET_OUTPUT(E_DIR_PIN);
+
+#ifdef RS485
+	//Enable the RS485 transceiver
+	SET_OUTPUT(RX_ENABLE_PIN);
+	SET_OUTPUT(TX_ENABLE_PIN);
+	SET_OUTPUT(TX_485_PIN);
+	SET_INPUT(RX_485_PIN);
+	disable_transmit();
+#endif
 
 	#ifdef	HEATER_PIN
 		WRITE(HEATER_PIN, 0); SET_OUTPUT(HEATER_PIN);
@@ -83,6 +93,10 @@ void init(void) {
 	// set up serial
 	serial_init();
 
+#ifdef RS485
+	// set up intercom
+	intercom_init();
+#endif
 	// set up inputs and outputs
 	io_init();
 
@@ -116,6 +130,9 @@ void clock_250ms(void) {
 	// reset watchdog
 	wd_reset();
 
+#ifdef RS485
+	start_send();
+#endif
 	temp_tick();
 
 	if (steptimeout > (30 * 4)) {
@@ -144,6 +161,10 @@ void clock_250ms(void) {
 int main (void)
 {
 	init();
+
+#ifdef RS485
+	update_send_cmd(0);
+#endif
 
 	// main loop
 	for (;;)
