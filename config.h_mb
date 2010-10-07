@@ -1,3 +1,3 @@
-#include	"config_eb.h"
+#include	"config_mb.h"
 
 #define GEN3

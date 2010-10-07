@@ -177,6 +177,7 @@ int main (void)
 #ifdef RS485
 	update_send_cmd(0);
 #endif
+
 	// main loop
 	for (;;)
 	{

@@ -324,7 +324,7 @@ void dda_start(DDA *dda) {
 			z_direction(dda->z_direction);
 			e_direction(dda->e_direction);
 
-#ifdef	TOGGLE_Z_ENABLE			
+#ifdef	DISABLE_Z			
 			//Disable the z if we aren't using it
 			if (dda->z_delta == 0)
 				WRITE(Z_ENABLE_PIN,1);
