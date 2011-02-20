@@ -31,10 +31,10 @@
 
 # MCU_TARGET = atmega168
 # MCU_TARGET = atmega328p
-MCU_TARGET = atmega644p
-# MCU_TARGET = atmega1280
+# MCU_TARGET = atmega644p
+MCU_TARGET = atmega2560
 
-# F_CPU = 16000000L
+F_CPU = 16000000L
 
 ##############################################################################
 #                                                                            #
@@ -59,7 +59,7 @@ MCU_TARGET = atmega644p
 #                                                                            #
 ##############################################################################
 
-# DEFS = -DF_CPU=$(F_CPU) -DHOST -DGEN3
+DEFS = -DF_CPU=$(F_CPU)
 # DEFS += "-DDEBUG=1"
 
 ##############################################################################
@@ -68,8 +68,8 @@ MCU_TARGET = atmega644p
 #                                                                            #
 ##############################################################################
 
-AVRDUDE = avrdude
-AVRDUDECONF = /etc/avrdude.conf
+AVRDUDE = ../arduino-0022/hardware/tools/avrdude
+AVRDUDECONF = ../arduino-0022/hardware/tools/avrdude.conf
 
 ##############################################################################
 #                                                                            #
@@ -80,13 +80,14 @@ AVRDUDECONF = /etc/avrdude.conf
 #                                                                            #
 ##############################################################################
 
-PROGPORT = /dev/arduino
+PROGPORT = /dev/ttyACM0
 
 # atmega168
 #PROGBAUD = 19200
 # atmega328p, 644p, 1280
-PROGBAUD = 57600
-
+#PROGBAUD = 57600
+# atmega2560
+PROGBAUD = 115200
 
 ##############################################################################
 #                                                                            #
@@ -119,7 +120,7 @@ program: $(PROGRAM).hex config.h
 	stty $(PROGBAUD) raw ignbrk hup < $(PROGPORT)
 	@sleep 0.1
 	@stty $(PROGBAUD) raw ignbrk hup < $(PROGPORT)
-	$(AVRDUDE) -cstk500v1 -b$(PROGBAUD) -p$(MCU_TARGET) -P$(PROGPORT) -C$(AVRDUDECONF) -U flash:w:$^
+	$(AVRDUDE) -cstk500v2 -b$(PROGBAUD) -p$(MCU_TARGET) -P$(PROGPORT) -C$(AVRDUDECONF) -U flash:w:$^
 	stty 115200 raw ignbrk -hup -echo ixoff < $(PROGPORT)
 
 program-fuses:
